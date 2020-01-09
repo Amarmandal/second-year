@@ -1,10 +1,7 @@
-// require('dotenv').config();
 const express = require('express');
 const ejs = require('ejs');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-// const encrypt = require('mongoose-encryption');
-// const md5 = require('md5');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 
@@ -26,9 +23,6 @@ const patientSchema = new Schema({
     email: String,
     password: String,
 })
-
-// const secret = process.env.SECRET;
-// patientSchema.plugin(encrypt, { secret: secret, encryptedFields: ['password']});
 
 const Patient = mongoose.model('Patient', patientSchema);
 
@@ -71,7 +65,7 @@ app.post("/login", (req, res) => {
     const password = req.body.password;
 
     Patient.findOne({ email: username }, (err, foundUser) => {
-        // console.log(foundUser.password);
+
         if(err) {
             console.log(err);
         } else {
