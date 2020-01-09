@@ -54,12 +54,31 @@ app.get("/login", (req, res) => {
     res.render("login");
 })
 
+app.get("/secrets", (req, res) => {
+    if( req.isAuthenticated() ){
+        res.render("secrets");
+    } else {
+        res.redirect("/login");
+    }
+});
+
 app.post("/register", (req, res) => {
     Patient.register({
-        name:
-    }, req.body.password , () => {
-
-    })
+        name: req.body.name,
+        address: req.body.address,
+        contact: req.body.contact,
+        gender: req.body.gender,
+        email: req.body.username
+    }, req.body.password , (err, user) => {
+        if(err) {
+            console.log(err);
+            res.redirect("/register");
+        } else {
+            passport.authenticate("local")(req, res, () => {
+                res.redirect("/secrets");
+            })
+        }
+    });
 });
 
 app.post("/login", (req, res) => {
