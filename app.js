@@ -1,12 +1,17 @@
-// require('dotenv').config();
 const express = require('express');
 const ejs = require('ejs');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+<<<<<<< HEAD
 // const encrypt = require('mongoose-encryption');
 const md5 = require('md5');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
+=======
+const session = require('express-session');
+const passport = require('passport');
+const passportLocalMongoose = require('passport-local-mongoose');
+>>>>>>> test
 
 const app = express();
 
@@ -15,8 +20,17 @@ app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({
     extended: true
 }));
+app.use(session({
+    secret: 'This is the secret key!',
+    resave: false,
+    saveUninitialized: true
+}));
+app.use(passport.initialize());
+app.use(passport.session());
 
 mongoose.connect('mongodb://localhost:27017/hospital', { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.set('useCreateIndex', true);
+
 const Schema = mongoose.Schema;
 const patientSchema = new Schema({
     name: String,
@@ -26,11 +40,13 @@ const patientSchema = new Schema({
     email: String,
     password: String,
 })
+patientSchema.plugin(passportLocalMongoose);
 
-// const secret = process.env.SECRET;
-// patientSchema.plugin(encrypt, { secret: secret, encryptedFields: ['password']});
+const Patient = new mongoose.model('Patient', patientSchema);
 
-const Patient = mongoose.model('Patient', patientSchema);
+passport.use(Patient.createStrategy());
+passport.serializeUser(Patient.serializeUser());
+passport.deserializeUser(Patient.deserializeUser());
 
 
 app.get("/", (req, res) => {
@@ -41,6 +57,7 @@ app.get("/register", (req, res) => {
     res.render("register");
 })
 
+<<<<<<< HEAD
 app.post("/register", (req, res) => {
     bcrypt.hash(req.body.password, saltRounds, function (err, hash) {
         const newPatient = new Patient({
@@ -62,33 +79,61 @@ app.post("/register", (req, res) => {
     })
 });
 
+=======
+>>>>>>> test
 app.get("/login", (req, res) => {
     res.render("login");
 })
 
-app.post("/login", (req, res) => {
-    const username = req.body.username;
-    const password = req.body.password;
+app.get("/secrets", (req, res) => {
+    if( req.isAuthenticated() ){
+        res.render("secrets");
+    } else {
+        res.redirect("/login");
+    }
+});
 
-    Patient.findOne({ email: username }, (err, foundUser) => {
-        // console.log(foundUser.password);
+app.get("/logout", function (req, res) {
+    req.logout();
+    res.redirect("/");
+});
+
+app.post("/register", (req, res) => {
+    Patient.register({
+        name: req.body.name,
+        address: req.body.address,
+        contact: req.body.contact,
+        gender: req.body.gender,
+        username: req.body.username
+    }, req.body.password , (err, user) => {
         if(err) {
             console.log(err);
+            res.redirect("/register");
         } else {
-            if (foundUser) {
-                bcrypt.compare(password, foundUser.password , function (err, result) {
-                    if ( result === true) {
-                        res.render("secrets"); //If both Username and password is corret
-                    }
-                    else {
-                        res.send("Incorrect Username or Password"); //if user is found but Password in incorrect
-                    }
-                });
-            } else {
-                res.send("User not found"); //if no user email is matched in the database
-            }
+            passport.authenticate("local")(req, res, () => {
+                res.redirect("/secrets");
+            })
         }
-    })
+    });
+});
+
+app.post("/login", function (req, res) {
+
+    const patient = new Patient({
+        username: req.body.username,
+        password: req.body.password
+    });
+
+    req.login(patient, function (err) {
+        if (err) {
+            console.log(err);
+        } else {
+            passport.authenticate("local")(req, res, function () {
+                res.redirect("/secrets");
+            });
+        }
+    });
+
 });
 
 
