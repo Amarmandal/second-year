@@ -3,17 +3,9 @@ const express = require('express');
 const ejs = require('ejs');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-//some more changes
-<<<<<<< HEAD
-// const encrypt = require('mongoose-encryption');
-const md5 = require('md5');
-const bcrypt = require('bcrypt');
-const saltRounds = 10;
-=======
 const session = require('express-session');
 const passport = require('passport');
 const passportLocalMongoose = require('passport-local-mongoose');
->>>>>>> test
 
 const app = express();
 
@@ -59,36 +51,12 @@ app.get("/register", (req, res) => {
     res.render("register");
 })
 
-<<<<<<< HEAD
-app.post("/register", (req, res) => {
-    bcrypt.hash(req.body.password, saltRounds, function (err, hash) {
-        const newPatient = new Patient({
-            name: req.body.name,
-            address: req.body.address,
-            contact: req.body.contact,
-            gender: req.body.gender,
-            email: req.body.username,
-            password: hash
-        })
-
-        newPatient.save((err) => {
-            if (err) {
-                console.log(err);
-            } else {
-                res.render("secrets");
-            }
-        })
-    })
-});
-
-=======
->>>>>>> test
 app.get("/login", (req, res) => {
     res.render("login");
 })
 
 app.get("/secrets", (req, res) => {
-    if( req.isAuthenticated() ){
+    if (req.isAuthenticated()) {
         res.render("secrets");
     } else {
         res.redirect("/login");
@@ -107,8 +75,8 @@ app.post("/register", (req, res) => {
         contact: req.body.contact,
         gender: req.body.gender,
         username: req.body.username
-    }, req.body.password , (err, user) => {
-        if(err) {
+    }, req.body.password, (err, user) => {
+        if (err) {
             console.log(err);
             res.redirect("/register");
         } else {
@@ -137,7 +105,6 @@ app.post("/login", function (req, res) {
     });
 
 });
-
 
 app.listen(3000, () => {
     console.log("Server Started Listening on port 3000");
