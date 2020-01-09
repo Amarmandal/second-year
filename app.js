@@ -2,8 +2,7 @@ const express = require('express');
 const ejs = require('ejs');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-const bcrypt = require('bcrypt');
-const saltRounds = 10;
+
 
 const app = express();
 
@@ -36,24 +35,7 @@ app.get("/register", (req, res) => {
 })
 
 app.post("/register", (req, res) => {
-    bcrypt.hash(req.body.password, saltRounds, function (err, hash) {
-        const newPatient = new Patient({
-            name: req.body.name,
-            address: req.body.address,
-            contact: req.body.contact,
-            gender: req.body.gender,
-            email: req.body.username,
-            password: hash,
-        })
 
-        newPatient.save((err) => {
-            if (err) {
-                console.log(err);
-            } else {
-                res.render("secrets");
-            }
-        })
-    })
 });
 
 app.get("/login", (req, res) => {
@@ -61,28 +43,7 @@ app.get("/login", (req, res) => {
 })
 
 app.post("/login", (req, res) => {
-    const username = req.body.username;
-    const password = req.body.password;
 
-    Patient.findOne({ email: username }, (err, foundUser) => {
-
-        if(err) {
-            console.log(err);
-        } else {
-            if (foundUser) {
-                bcrypt.compare(password, foundUser.password , function (err, result) {
-                    if ( result === true) {
-                        res.render("secrets"); //If both Username and password is corret
-                    }
-                    else {
-                        res.send("Incorrect Username or Password"); //if user is found but Password in incorrect
-                    }
-                });
-            } else {
-                res.send("User not found"); //if no user email is matched in the database
-            }
-        }
-    })
 });
 
 app.listen(3000, () => {
