@@ -33,7 +33,7 @@ const patientSchema = new Schema({
     email: String,
     password: String,
 })
-patientSchema.plugin(passportLocalMongoose);
+patientSchema.plugin(passportLocalMongoose, {usernameField: email, pass});
 
 const Patient = mongoose.model('Patient', patientSchema);
 
