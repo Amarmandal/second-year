@@ -33,9 +33,9 @@ const patientSchema = new Schema({
     email: String,
     password: String,
 })
-patientSchema.plugin(passportLocalMongoose, {usernameField: email, pass});
+patientSchema.plugin(passportLocalMongoose);
 
-const Patient = mongoose.model('Patient', patientSchema);
+const Patient = new mongoose.model('Patient', patientSchema);
 
 passport.use(Patient.createStrategy());
 passport.serializeUser(Patient.serializeUser());
@@ -62,13 +62,18 @@ app.get("/secrets", (req, res) => {
     }
 });
 
+app.get("/logout", function (req, res) {
+    req.logout();
+    res.redirect("/");
+});
+
 app.post("/register", (req, res) => {
     Patient.register({
         name: req.body.name,
         address: req.body.address,
         contact: req.body.contact,
         gender: req.body.gender,
-        email: req.body.username
+        username: req.body.username
     }, req.body.password , (err, user) => {
         if(err) {
             console.log(err);
@@ -81,7 +86,22 @@ app.post("/register", (req, res) => {
     });
 });
 
-app.post("/login", (req, res) => {
+app.post("/login", function (req, res) {
+
+    const patient = new Patient({
+        username: req.body.username,
+        password: req.body.password
+    });
+
+    req.login(patient, function (err) {
+        if (err) {
+            console.log(err);
+        } else {
+            passport.authenticate("local")(req, res, function () {
+                res.redirect("/secrets");
+            });
+        }
+    });
 
 });
 
