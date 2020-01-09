@@ -58,13 +58,25 @@ app.get("/secrets", (req, res) => {
     if (req.isAuthenticated()) {
         res.render("secrets");
     } else {
+        res.redirect("/");
+    }
+});
+
+app.get("/appoint", (req, res) => {
+    if (req.isAuthenticated()) {
+        res.render("appoint");
+    } else {
         res.redirect("/login");
     }
 });
 
+app.post("/appoint", (req, res) => {
+    res.send("Thank you for posting the records.");
+})
+
 app.get("/logout", function (req, res) {
     req.logout();
-    res.redirect("/");
+    res.redirect("/login");
 });
 
 app.post("/register", (req, res) => {
