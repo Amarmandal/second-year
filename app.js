@@ -4,7 +4,7 @@ const ejs = require('ejs');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 // const encrypt = require('mongoose-encryption');
-// const md5 = require('md5');
+const md5 = require('md5');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 
@@ -49,7 +49,7 @@ app.post("/register", (req, res) => {
             contact: req.body.contact,
             gender: req.body.gender,
             email: req.body.username,
-            password: hash,
+            password: hash
         })
 
         newPatient.save((err) => {
