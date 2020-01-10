@@ -8,35 +8,35 @@
     <form action="/appoint" method="POST">
       <div class="form-row">
         <div class="form-group col-md-4">
-          <label for="inputEmail4">Patient Name*</label>
-          <input type="text" class="form-control" id="inputEmail4" placeholder="Your Name" required>
+          <label>Patient Name*</label>
+          <input type="text" class="form-control" name="name" placeholder="Your Name" required>
         </div>
         <div class="form-group col-md-4">
-          <label for="inputPassword4">Address*</label>
-          <input type="text" class="form-control" id="inputPassword4" placeholder="Address" required>
+          <label >Address*</label>
+          <input type="text" class="form-control" name="address" placeholder="Address" required>
         </div>
         <div class="form-group col-md-4">
-          <label for="inputPassword4">Phone Number*</label>
-          <input type="tel" class="form-control" id="inputPassword4" placeholder="Number" pattern="[977]{}[0-9]{10}" required>
+          <label >Phone Number*</label>
+          <input type="tel" class="form-control" name="contact" placeholder="Number" pattern="[977]{3}[0-9]{10}" required>
         </div>
       </div>
 
       <div class="form-row">
         <div class="form-group col-md-4">
-          <label for="inputEmail4">Email*</label>
-          <input type="email" class="form-control" id="inputEmail4" placeholder="Email">
+          <label>Email*</label>
+          <input type="email" class="form-control" name="email" placeholder="Email">
         </div>
         <div class="form-group col-md-4">
           <label for="inputState">Gender</label>
-          <select id="inputState" class="form-control">
+          <select id="inputState" name="gender" class="form-control">
             <option selected>Male</option>
             <option>Female</option>
             <option>Others</option>
           </select>
         </div>
         <div class="form-group col-md-4">
-          <label for="inputPassword4">DOB</label>
-          <input type="date" class="form-control" id="inputPassword4" placeholder="Password">
+          <label>DOB</label>
+          <input type="date" class="form-control" name="dob" placeholder="Date of Birth">
         </div>
       </div>
       <p><strong>Schedule Information</strong></p>
@@ -44,7 +44,7 @@
       <div class="form-row">
         <div class="form-group col-md-4">
           <label for="inputState">Select Department</label>
-          <select id="inputState" class="form-control">
+          <select id="inputState" class="form-control" name="depart">
             <option selected>Choose Department</option>
             <option>Neurology</option>
             <option>Cardiology</option>
@@ -57,7 +57,7 @@
 
         <div class="form-group col-md-4">
           <label for="inputState">Select Doctor</label>
-          <select id="inputState" class="form-control">
+          <select id="inputState" class="form-control" name="doctor">
             <option selected>Choose Doctor</option>
             <option>...</option>
           </select>
@@ -65,12 +65,12 @@
 
         <div class="form-group col-md-4">
           <label for="inputPassword4">Appointment Date</label>
-          <input type="date" class="form-control" id="inputPassword4" placeholder="Password">
+          <input type="date" class="form-control" id="inputPassword4" name="sDate" placeholder="Password">
         </div>
       </div>
       <div class="form-group">
         <lable>Preferred Time</lable>
-        <select class="form-control col-md-4">
+        <select class="form-control col-md-4" name="sTime">
           <option>10 am to 12 pm</option>
           <option>10 am to 12 pm</option>
           <option>10 am to 12 pm</option>
