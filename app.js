@@ -32,10 +32,25 @@ const patientSchema = new Schema({
     gender: String,
     email: String,
     password: String,
-})
+});
+
+const appointmentSchema = new Schema({
+    "pName": String,
+    "pAddress": String,
+    "pNumber": Number,
+    "pEmail": String,
+    "pGender": String,
+    "dob": Date,
+    "department": String,
+    "doctor": String,
+    "appointmentDate": Date,
+    "preferredTime": String,
+});
+
 patientSchema.plugin(passportLocalMongoose);
 
 const Patient = new mongoose.model('Patient', patientSchema);
+const Appointment = new mongoose.nmodel('Appointment', appointmentSchema);
 
 passport.use(Patient.createStrategy());
 passport.serializeUser(Patient.serializeUser());
@@ -71,7 +86,25 @@ app.get("/appoint", (req, res) => {
 });
 
 app.post("/appoint", (req, res) => {
-    res.send("Thank you for posting the records.");
+    const newAppointmnet = new Appointment({
+        "pName": req.body.name,
+        "pAddress": req.body.address,
+        "pNumber": req.body.contact,
+        "pEmail": req.body.email,
+        "pGender": req.body.gender,
+        "dob": req.body.dob,
+        "department": req.body.depart,
+        "doctor": req.body.doctor,
+        "appointmentDate": req.body.sDate,
+        "preferredTime": req.body.sTime,
+    });
+    newAppointmnet.save((err, newAppointmnet){
+        if(err){
+            console.log(err);
+        }else {
+            res.send(newAppointmnet);
+        }
+    });
 })
 
 app.get("/logout", function (req, res) {
