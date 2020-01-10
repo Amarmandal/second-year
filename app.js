@@ -50,7 +50,7 @@ const appointmentSchema = new Schema({
 patientSchema.plugin(passportLocalMongoose);
 
 const Patient = new mongoose.model('Patient', patientSchema);
-const Appointment = new mongoose.model('Appointment', appointmentSchema);
+const Appointment = mongoose.model('Appointment', appointmentSchema);
 
 passport.use(Patient.createStrategy());
 passport.serializeUser(Patient.serializeUser());
@@ -71,7 +71,19 @@ app.get("/login", (req, res) => {
 
 app.get("/secrets", (req, res) => {
     if (req.isAuthenticated()) {
-        res.render("secrets");
+        userEmail = req.user.username;
+        Appointment.findOne({ pEmail: userEmail }, (err, docs) => {
+            if (err) {
+                console.log(err);
+            } else {
+                if (docs === null) {
+                    res.render("secrets", { 'foo': 0});
+                } else {
+                    var d = new Date(docs.appointmentDate);
+                    res.render("secrets", { 'foo': d.toDateString() });
+                }
+            }
+        })
     } else {
         res.redirect("/");
     }
@@ -79,7 +91,18 @@ app.get("/secrets", (req, res) => {
 
 app.get("/appoint", (req, res) => {
     if (req.isAuthenticated()) {
-        res.render("appoint");
+        userEmail = req.user.username;
+        Appointment.findOne({ pEmail: userEmail }, (err, docs) => {
+            if (err) {
+                console.log(err);
+            } else {
+                if (docs === null) {
+                    res.render("appoint");
+                } else {
+                    res.send("<h1>Please complete the pending appointment before making new request</h1>")
+                }
+            }
+        })
     } else {
         res.redirect("/login");
     }
@@ -103,7 +126,7 @@ app.post("/appoint", (req, res) => {
             if (err) {
                 console.log(err);
             } else {
-                res.send(newAppointment);
+                res.redirect("/secrets");
             }
         });
 
