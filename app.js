@@ -50,7 +50,7 @@ const appointmentSchema = new Schema({
 patientSchema.plugin(passportLocalMongoose);
 
 const Patient = new mongoose.model('Patient', patientSchema);
-const Appointment = new mongoose.nmodel('Appointment', appointmentSchema);
+const Appointment = new mongoose.model('Appointment', appointmentSchema);
 
 passport.use(Patient.createStrategy());
 passport.serializeUser(Patient.serializeUser());
@@ -86,25 +86,31 @@ app.get("/appoint", (req, res) => {
 });
 
 app.post("/appoint", (req, res) => {
-    const newAppointmnet = new Appointment({
-        "pName": req.body.name,
-        "pAddress": req.body.address,
-        "pNumber": req.body.contact,
-        "pEmail": req.body.email,
-        "pGender": req.body.gender,
-        "dob": req.body.dob,
-        "department": req.body.depart,
-        "doctor": req.body.doctor,
-        "appointmentDate": req.body.sDate,
-        "preferredTime": req.body.sTime,
-    });
-    newAppointmnet.save((err, newAppointmnet){
-        if(err){
-            console.log(err);
-        }else {
-            res.send(newAppointmnet);
-        }
-    });
+    if (req.isAuthenticated()) {
+        const newAppointment = new Appointment({
+            "pName": req.body.name,
+            "pAddress": req.body.address,
+            "pNumber": req.body.contact,
+            "pEmail": req.body.email,
+            "pGender": req.body.gender,
+            "dob": req.body.dob,
+            "department": req.body.depart,
+            "doctor": req.body.doctor,
+            "appointmentDate": req.body.sDate,
+            "preferredTime": req.body.sTime,
+        });
+        newAppointment.save((err, newAppointment) => {
+            if (err) {
+                console.log(err);
+            } else {
+                res.send(newAppointment);
+            }
+        });
+
+    } else {
+        res.redirect("/");
+    }
+
 })
 
 app.get("/logout", function (req, res) {
