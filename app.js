@@ -66,7 +66,11 @@ app.get("/register", (req, res) => {
 })
 
 app.get("/login", (req, res) => {
-    res.render("login");
+    res.render("login", { 'loginText': "User ", 'permission': '/login'});
+})
+
+app.get("/admin", (req, res) => {
+    res.render("login", { 'loginText': "Employee ", 'permission': '/admin'});
 })
 
 app.get("/secrets", (req, res) => {
@@ -178,6 +182,10 @@ app.post("/login", function (req, res) {
     });
 
 });
+
+app.post("/admin", (req, res) => {
+    console.log("Admin is trying to login");
+})
 
 app.listen(3000, () => {
     console.log("Server Started Listening on port 3000");
