@@ -1,5 +1,7 @@
 const express = require('express');
 const ejs = require('ejs');
+const fs = require('fs-extra');
+const path = require('path');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const session = require('express-session');
@@ -86,6 +88,7 @@ passport.use(Patient.createStrategy());
 passport.serializeUser(Patient.serializeUser());
 passport.deserializeUser(Patient.deserializeUser());
 
+//All get Request made
 
 app.get("/", (req, res) => {
     res.render("index");
@@ -96,11 +99,11 @@ app.get("/register", (req, res) => {
 })
 
 app.get("/login", (req, res) => {
-    res.render("login", { 'loginText': "User ", 'permission': '/login'});
+    res.render("login", { 'loginText': "User ", 'permission': '/login' });
 })
 
 app.get("/admin", (req, res) => {
-    res.render("login", { 'loginText': "Employee ", 'permission': '/admin'});
+    res.render("login", { 'loginText': "Employee ", 'permission': '/admin' });
 })
 
 app.get("/secrets", (req, res) => {
@@ -111,7 +114,7 @@ app.get("/secrets", (req, res) => {
                 console.log(err);
             } else {
                 if (docs === null) {
-                    res.render("secrets", { 'foo': 0});
+                    res.render("secrets", { 'foo': 0 });
                 } else {
                     var d = new Date(docs.appointmentDate);
                     res.render("secrets", { 'foo': d.toDateString() });
@@ -142,6 +145,41 @@ app.get("/appoint", (req, res) => {
     }
 });
 
+app.get("/logout", (req, res) => {
+    req.logout();
+    res.redirect("/login");
+});
+
+app.get("/getReport", (req, res) => {
+    if (req.isAuthenticated()) {
+        userEmail = req.user.username;
+        name = "Aditya";
+        Report.findOne({ "_id": 345983 }, (err, docs) => {
+            if (err) {
+                console.log(err);
+            }
+            else {
+                reportPath = path.join(__dirname + docs.reportPath)
+                fs.readFile(reportPath, (err, data) => {
+                    if (err) {
+                        console.log(err);
+                        res.render('customError', { 'error': 'No Report Found' });
+                    } else {
+                        res.setHeader('Content-Type', 'application/pdf');
+                        res.setHeader('Content-Disposition', `inline; filename=${name}.pdf`);
+                        res.send(data);
+                    }
+                })
+            }
+        })
+
+    } else {
+        res.redirect("/");
+    }
+})
+
+//All Post Request.
+
 app.post("/appoint", (req, res) => {
     if (req.isAuthenticated()) {
         const newAppointment = new Appointment({
@@ -169,11 +207,6 @@ app.post("/appoint", (req, res) => {
     }
 
 })
-
-app.get("/logout", function (req, res) {
-    req.logout();
-    res.redirect("/login");
-});
 
 app.post("/register", (req, res) => {
     Patient.register({
@@ -225,7 +258,7 @@ app.post("/admin", (req, res) => {
         patient.username === 'doctor5@mail.com' || patient.username === 'doctor6@mail.com' ||
         patient.username === 'doctor7@mail.com' || patient.username === 'doctor8@mail.com' ||
         patient.username === 'doctor9@mail.com' || patient.username === 'doctor10@mail.com'
-    ){
+    ) {
         req.login(patient, function (err) {
             if (err) {
                 console.log(err);
