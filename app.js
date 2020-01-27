@@ -155,8 +155,7 @@ app.get("/logout", (req, res) => {
 app.get("/getReport", (req, res) => {
     if (req.isAuthenticated()) {
         userEmail = req.user.username;
-        name = "bob";
-        Report.findOne({ "_id": 123456 }, (err, docs) => {
+        Report.findOne({ "rEmail": userEmail }, (err, docs) => {
             if (err) {
                 console.log(err);
             }
@@ -165,6 +164,7 @@ app.get("/getReport", (req, res) => {
                 fs.readFile(reportPath, (err, data) => {
                     if (err) {
                         console.log(err);
+                        console.log(userEmail);
                         res.render('customError', { 'error': 'No Report Found' });
                     } else {
                         res.setHeader('Content-Type', 'application/pdf');
