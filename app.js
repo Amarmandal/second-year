@@ -156,15 +156,11 @@ app.get("/getReport", (req, res) => {
     if (req.isAuthenticated()) {
         userEmail = req.user.username;
         Report.findOne({ "rEmail": userEmail }, (err, docs) => {
-            if (err) {
-                console.log(err);
-            }
-            else {
+            if (docs != null) {
                 reportPath = path.join(__dirname + docs.reportPath)
                 fs.readFile(reportPath, (err, data) => {
                     if (err) {
                         console.log(err);
-                        console.log(userEmail);
                         res.render('customError', { 'error': 'No Report Found' });
                     } else {
                         res.setHeader('Content-Type', 'application/pdf');
@@ -172,6 +168,9 @@ app.get("/getReport", (req, res) => {
                         res.send(data);
                     }
                 })
+            }
+            else {
+                res.render('customError', { 'error': 'No Records Found' });
             }
         })
 
