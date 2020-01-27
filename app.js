@@ -163,7 +163,7 @@ app.get("/getReport", (req, res) => {
                         res.render('customError', { 'error': 'No Report Found' });
                     } else {
                         res.setHeader('Content-Type', 'application/pdf');
-                        res.setHeader('Content-Disposition', `inline; filename=${name}.pdf`);
+                        res.setHeader('Content-Disposition', `inline; filename=${docs.id}.pdf`);
                         res.send(data);
                     }
                 })
