@@ -1,3 +1,5 @@
+//this is the test branch
+
 const express = require('express');
 const ejs = require('ejs');
 const fs = require('fs-extra');
@@ -153,8 +155,8 @@ app.get("/logout", (req, res) => {
 app.get("/getReport", (req, res) => {
     if (req.isAuthenticated()) {
         userEmail = req.user.username;
-        name = "Aditya";
-        Report.findOne({ "_id": 345983 }, (err, docs) => {
+        name = "bob";
+        Report.findOne({ "_id": 123456 }, (err, docs) => {
             if (err) {
                 console.log(err);
             }
@@ -237,6 +239,7 @@ app.post("/login", function (req, res) {
     req.login(patient, function (err) {
         if (err) {
             console.log(err);
+            // res.render("customError", {'error' : "Incorrect Username or Password"})
         } else {
             passport.authenticate("local")(req, res, function () {
                 res.redirect("/secrets");
