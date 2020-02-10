@@ -117,8 +117,14 @@ app.get("/secrets", (req, res) => {
                 if (docs === null) {
                     res.render("secrets", { 'foo': 0 });
                 } else {
-                    var d = new Date(docs.appointmentDate);
-                    res.render("secrets", { 'foo': d.toDateString() });
+                    var previous = new Date(docs.appointmentDate);
+                    var now = new Date();
+                    let diff = previous.getDate() - now.getDate();
+                    if (diff > -1) {
+                        res.render("secrets", { 'foo': previous.toDateString() });
+                    } else {
+                        res.render("secrets", { 'foo': -1 });
+                    }
                 }
             }
         })
@@ -145,6 +151,14 @@ app.get("/appoint", (req, res) => {
         res.redirect("/login");
     }
 });
+
+app.get("/reschedule", (req, res) => {
+    if(req.isAuthenticated()) {
+        res.render("reschedule");
+    } else {
+        res.redirect("/login");
+    }
+})
 
 app.get("/logout", (req, res) => {
     req.logout();
@@ -206,6 +220,20 @@ app.post("/appoint", (req, res) => {
         res.redirect("/");
     }
 
+})
+
+app.post("/reschedule", (req, res) => {
+    if (req.isAuthenticated()) {
+        Appointment.updateOne({ pEmail: req.user.username }, { "appointmentDate": req.body.sDate }, (err) => {
+            if (err) {
+                console.log(err);
+            } else {
+                res.redirect("/secrets");
+            }
+        })
+    } else {
+        res.redirect("/login");
+    }
 })
 
 app.post("/register", (req, res) => {

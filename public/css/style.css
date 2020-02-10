@@ -3,6 +3,13 @@ body {
     text-align: center;
 }
 
+.info {
+  background-color: #e7f3fe;
+  margin: 0.25rem;
+  padding: 0.25rem;
+  border-left: 6px solid #2196F3;
+}
+
 /* login button */
 @media (min-width: 991px) {
     .login {
@@ -321,3 +328,4 @@ section .section-title {
     height: 120px;
     border-radius: 50%;
 }
+
