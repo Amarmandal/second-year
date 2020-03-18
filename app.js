@@ -45,7 +45,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(multer({ storage: fileStorage, fileFilter: fileFilter }).single('pReport'));
 
-mongoose.connect('mongodb://localhost:27017/hospital', { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect('mongodb+srv://admin-amar:test123@cluster0-qmmfk.mongodb.net/hospital', { useNewUrlParser: true, useUnifiedTopology: true });
 mongoose.set('useCreateIndex', true);
 
 
@@ -322,6 +322,6 @@ app.post('/upload', (req, res) => {
 })
 
 
-app.listen(3000, () => {
+app.listen(process.env.PORT || 3000, () => {
     console.log("Server Started Listening on port 3000");
 })
